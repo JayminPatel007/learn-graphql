@@ -33,7 +33,7 @@ const posts = [
         title: "MBBS",
         body: "MBBS is great",
         published: true,
-        author: '2'
+        author: '1'
     },
     {
         id: '1',
@@ -57,6 +57,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
     }
     type Post{
         id: ID!
@@ -100,6 +101,13 @@ const resolvers = {
         author(parent, args, ctx, info){
             return users.find(user=>{
                 return user.id === parent.author
+            })
+        }
+    },
+    User: {
+        posts(parent, args, ctx, info){
+            return posts.filter(post=>{
+                return post.author === parent.id
             })
         }
     }
