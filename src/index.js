@@ -1,7 +1,7 @@
 import {GraphQLServer} from 'graphql-yoga'
 import uuidv4 from 'uuid/v4'
 
-const users = [
+var users = [
     {
         id: '1',
         name: "Jaymin Patel",
@@ -21,7 +21,7 @@ const users = [
     }
 ]
 
-const posts = [
+var posts = [
     {
         id: '1',
         title: "CS",
@@ -45,7 +45,7 @@ const posts = [
     }
 ]
 
-const comments = [
+var comments = [
     {
         id: '1',
         text: "Yep",
@@ -83,6 +83,7 @@ const typeDefs = `
         createUser(data: createUserInput): User!
         createPost(data: createPostInput): Post!
         createComment(data: createCommentInput): Comment!
+        deleteUser(id: ID!): User!
     }
 
     input createUserInput{
@@ -157,6 +158,27 @@ const resolvers = {
 
             users.push(user)
             return user
+        },
+        deleteUser(parent, args, ctx, info){
+            const userindex = users.findIndex(user=>user.id===args.id)
+            if (userindex === -1){
+                throw new Error("User does not Exists!")
+            }
+            const deletedusers = users.splice(userindex, 1)
+            posts = posts.filter(cpost=>{
+                const postToDelete = cpost.author ===args.id
+                if (postToDelete){
+                    comments=comments.filter(comment=>{
+                        return comment.post !== cpost.id
+                    })
+                }
+                return !postToDelete
+            })
+
+            comments = comments.filter(comment =>{
+                return comment.author !== args.id
+            })
+            return deletedusers[0]
         },
         createPost(parent, args, ctx, info){
             const userexist = users.some(user=>user.id===args.data.author)
