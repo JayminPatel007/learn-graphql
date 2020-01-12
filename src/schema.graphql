@@ -8,9 +8,16 @@ type Mutation{
     createUser(data: createUserInput): User!
     createPost(data: createPostInput): Post!
     createComment(data: createCommentInput): Comment!
+    updateUser(id: ID!, data: updateUserInput): User!
     deleteUser(id: ID!): User!
     deletePost(id: ID!): Post!
     deleteComment(id: ID!): Comment!
+}
+
+input updateUserInput{
+    name: String
+    email: String
+    age: Int
 }
 
 input createUserInput{
