@@ -69,15 +69,13 @@ const Mutation= {
         }
 
         db.posts.push(post)
-        if(post.published){
-            pubsub.publish('post', {post})
-        }
+        pubsub.publish('post', {post:{data: post, mutation: "CREATED"}})
         return post;
     },
-    updatePost(parent, args, {db}, info){
+    updatePost(parent, args, {db, pubsub}, info){
         const {id, data} = args
         const post = db.posts.find(pos_t=>pos_t.id === id)
-        if (!post){
+        if (!post) {
             throw new Error("Post not found")
         }
         if (typeof data.title === "string"){
@@ -89,9 +87,10 @@ const Mutation= {
         if (typeof data.published === "boolean"){
             post.published === data.published
         }
+        pubsub.publish('post', {post: {data: post, mutation: "UPDATED"}})
         return post
     },
-    deletePost(parent, args, {db}, info){
+    deletePost(parent, args, {db, pubsub}, info){
         const postindex = db.posts.findIndex(cpost=>cpost.id===args.id)
         if (postindex === -1){
             throw new Error("Post does not exists")
@@ -100,6 +99,7 @@ const Mutation= {
         console.log(deletedPost)
 
         db.comments = db.comments.filter(ccomment=>ccomment.post !==args.id)
+        pubsub.publish('post', {pots:{data: post, mutation: "DELETED"}})
 
         return deletedPost[0]
     },
