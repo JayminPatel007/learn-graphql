@@ -58,7 +58,7 @@ const Mutation= {
         })
         return deletedusers[0]
     },
-    createPost(parent, args, {db}, info){
+    createPost(parent, args, {db, pubsub}, info){
         const userexist = db.users.some(user=>user.id===args.data.author)
         if (!userexist){
             throw new Error("User does not exists")
@@ -69,7 +69,9 @@ const Mutation= {
         }
 
         db.posts.push(post)
-
+        if(post.published){
+            pubsub.publish('post', {post})
+        }
         return post;
     },
     updatePost(parent, args, {db}, info){
