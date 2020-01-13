@@ -72,6 +72,23 @@ const Mutation= {
 
         return post;
     },
+    updatePost(parent, args, {db}, info){
+        const {id, data} = args
+        const post = db.posts.find(pos_t=>pos_t.id === id)
+        if (!post){
+            throw new Error("Post not found")
+        }
+        if (typeof data.title === "string"){
+            post.title = data.title
+        }
+        if (typeof data.body === "string"){
+            post.body = data.body
+        }
+        if (typeof data.published === "boolean"){
+            post.published === data.published
+        }
+        return post
+    },
     deletePost(parent, args, {db}, info){
         const postindex = db.posts.findIndex(cpost=>cpost.id===args.id)
         if (postindex === -1){
@@ -100,6 +117,17 @@ const Mutation= {
 
         db.comments.push(comment)
 
+        return comment
+    },
+    updateComment(parent, args, {db}, info){
+        const {id, data} = args;
+        const comment = db.comments.find(commen_t=>commen_t.id === id)
+        if(!comment){
+            throw new Error("Comment not found")
+        }
+        if (typeof data.text === "string"){
+            comment.text = data.text
+        }
         return comment
     },
     deleteComment(parent, args, {db}, info){
