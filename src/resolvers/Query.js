@@ -1,15 +1,12 @@
 const Query = {
-    comments(parent, args, {db}, info){
-        return db.comments
+    users(parent, args, {prisma}, info){
+        return prisma.query.users(null, info)
     },
-    users(parent, args, {db}, info){
-        return db.users
+    posts(parent, args, {prisma}, info){
+        return prisma.query.posts(null, info)
     },
-    posts(parent, args, {db}, info){
-        return db.posts
-    },
-    greeting(parent, args, {db}, info){
-        return `Hi, ${args.name}`
+    comments(parent, args, {prisma}, info){
+        return prisma.query.comments(null, info)
     }
 }
 
